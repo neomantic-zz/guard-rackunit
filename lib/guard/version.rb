@@ -1,1 +1,1 @@
-Guard::Rackunit::VERSION = 1.0.0
+Guard::Rackunit::VERSION = '1.0.0'
