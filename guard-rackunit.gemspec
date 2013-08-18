@@ -2,7 +2,6 @@ require File.expand_path('../lib/guard/version', __FILE__)
 
 Gem::Specification.new do |s|
   s.name = 'guard-rackunit'
-  s.name = 'grandmaster'
   s.version = Guard::Rackunit::VERSION
   s.platform = Gem::Platform::RUBY
 
