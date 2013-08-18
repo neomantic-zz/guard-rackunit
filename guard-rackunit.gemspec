@@ -1,3 +1,5 @@
+require 'guard'
+require File.expand_path('../lib/guard/rackunit', __FILE__)
 require File.expand_path('../lib/guard/version', __FILE__)
 
 Gem::Specification.new do |s|
