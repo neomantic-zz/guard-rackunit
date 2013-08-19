@@ -1,17 +1,19 @@
-module Guard
-  module Rackunit
-    class Runner
+require 'guard/guard'
 
-      def initialize(run_file_name)
-        @run_file_name = run_file_name
-      end
+module Support
 
-      def run
-        success = system("racket #{@run_file_name}")
-        if !success
-          Notifier.notify("Failed", :title => 'Rackunit results')
-        end
+  class Runner
+
+    def initialize(run_file_name)
+      @run_file_name = run_file_name
+    end
+
+    def run
+      success = system("racket #{@run_file_name}")
+      if !success
+        Guard::Notifier.notify("Failed", :title => 'Rackunit results')
       end
     end
   end
 end
+
