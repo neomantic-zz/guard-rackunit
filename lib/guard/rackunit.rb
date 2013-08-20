@@ -1,10 +1,10 @@
 require 'guard'
 require 'guard/guard'
-require_relative 'rackunit/runner'
-
 module Guard
 
   class Rackunit < Guard
+
+    require_relative 'rackunit/runner'
 
     # Initializes a Guard plugin.
     # Don't do any work here, especially as Guard plugins get initialized even if they are not in an active group!
@@ -16,7 +16,7 @@ module Guard
     #
     def initialize(watchers = [], options = {})
       super
-      @runner = Support::Runner.new(options[:test_runner_rkt] || "tests/test-runner.rkt")
+      @runner = Runner.new(options[:test_runner_rkt] || "/home/calbers/src/rig/tests/test-runner.rkt")
     end
 
     # Called once when Guard starts. Please override initialize method to init stuff.
