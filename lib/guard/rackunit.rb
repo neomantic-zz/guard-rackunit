@@ -16,7 +16,7 @@ module Guard
     #
     def initialize(watchers = [], options = {})
       super
-      @runner = Runner.new(options[:test_runner_rkt] || "/home/calbers/src/rig/tests/test-runner.rkt")
+      @runner = Runner.new(options[:test_runner_rkt] || "tests/test-runner.rkt")
     end
 
     # Called once when Guard starts. Please override initialize method to init stuff.
