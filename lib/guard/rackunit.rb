@@ -44,6 +44,7 @@ module Guard
     # @return [Object] the task result
     #
     def reload
+      run_all
     end
 
     # Called when just `enter` is pressed
@@ -54,6 +55,13 @@ module Guard
     #
     def run_all
       @runner.run
+      unless @runner.last_run.success?
+        @failed_paths = @runner.last_run.failed_paths
+        Notifier.notify("Failed", :title => 'Rackunit results', :image => :failed, :priority => 2)
+        throw :task_has_failed
+      else
+        Notifier.notify("Success", :title => "Rackunit results", :image => :success, :priority => 2)
+      end
     end
 
     # Default behaviour on file(s) changes that the Guard plugin watches.
@@ -62,6 +70,7 @@ module Guard
     # @return [Object] the task result
     #
     def run_on_changes(paths)
+      run_all
     end
 
     # Called on file(s) additions that the Guard plugin watches.
@@ -71,6 +80,7 @@ module Guard
     # @return [Object] the task result
     #
     def run_on_additions(paths)
+      run_all
     end
 
     # Called on file(s) modifications that the Guard plugin watches.
@@ -80,6 +90,7 @@ module Guard
     # @return [Object] the task result
     #
     def run_on_modifications(paths)
+      run_all
     end
 
     # Called on file(s) removals that the Guard plugin watches.
@@ -89,6 +100,7 @@ module Guard
     # @return [Object] the task result
     #
     def run_on_removals(paths)
+      run_all
     end
   end
 end
