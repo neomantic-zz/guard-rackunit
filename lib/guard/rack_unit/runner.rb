@@ -59,29 +59,6 @@ module Guard
         #@last_run
         true
       end
-
-
-      # def run_paths(paths)
-      #   spawn("racket -e '(require rackunit/test-ui) ")
-      # end
-
-      # class Run
-
-      #   def initialize(errors)
-      #     @errors = errors
-      #     unless success?
-      #       puts @errors
-      #     end
-      #   end
-
-      #   def success?
-      #     @errors.empty?
-      #   end
-
-      #   def failed_paths
-      #     @errors.split(/location:\s+(.+.rkt)/i)
-      #   end
-      # end
     end
   end
 end
