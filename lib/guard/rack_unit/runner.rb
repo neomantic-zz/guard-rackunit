@@ -1,5 +1,7 @@
 require_relative './command'
 require_relative './notifier'
+require 'open3'
+require 'set'
 
 module Guard
   class RackUnit
@@ -36,8 +38,24 @@ module Guard
       private
 
       def run_tests(all, paths)
-        command = Command.new(paths)
-        @last_run = without_bundler_env {Kernel.system(command)}
+        success_msg = ""
+        set = Set.new([])
+        execute_with_bundler do
+          Open3.popen3(Command.new(paths)) do |stdin, stdout, stderr, wait_thr|
+            pid = wait_thr.pid
+            exit_status = wait_thr.value
+            if exit_status.success?
+              success_msg = stdout.read
+            else
+              stderr.each_line do |line|
+                match_data = line.match(/\Alocation:.+path:(.+)>/)
+                unless match_data.nil?
+                  set.add match_data[1]
+                end
+              end
+            end
+          end
+        end
         if successful_run?
           # HACK
           @notifier.notify("")
@@ -46,7 +64,7 @@ module Guard
         end
       end
 
-      def without_bundler_env
+      def execute_with_bundler
         if defined?(::Bundler)
           ::Bundler.with_clean_env { yield }
         else
