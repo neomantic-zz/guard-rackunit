@@ -1,20 +1,21 @@
-require 'guard/rack_unit/inspectors/focused_inspector'
-require 'guard/rack_unit/command'
-require 'guard/rack_unit/notifier'
+require_relative './command'
+require_relative './notifier'
 
 module Guard
-  class Rackunit
+  class RackUnit
     class Runner
+
+      require_relative './inspectors/focused_inspector'
 
       def initialize(options = {})
         # HACK - options may be useless
         @options = options
-        @inspector = Inspectors::FocusedInspector.new(@options)
+        @inspector = RackUnit::Inspectors::FocusedInspector.new(@options)
         @notifier = Notifier.new(@options)
       end
 
       def run(paths)
-        paths = inspector.paths(paths)
+        paths = @inspector.paths(paths)
         return true if paths.empty?
         ::Guard::UI.info("Running: #{paths.join(' ')}", reset: true)
         run_tests(false, paths)
@@ -22,7 +23,7 @@ module Guard
 
       def run_all
         # HACK
-        paths = options[:spec_paths] || "tests/"
+        paths = @options[:spec_paths] || ["tests/"]
         return true if paths.empty?
         ::Guard::UI.info("Running All", reset: true)
         run_tests(true, paths)
@@ -36,9 +37,10 @@ module Guard
 
       def run_tests(all, paths)
         command = Command.new(paths)
-        success = without_bundler_env {Kernel.system(command)}
+        @last_run = without_bundler_env {Kernel.system(command)}
         if successful_run?
-          @notifier.notify
+          # HACK
+          @notifier.notify("")
         else
           @notifier.notify_failure
         end
@@ -52,7 +54,9 @@ module Guard
         end
       end
 
-      def successful_run?(results)
+      def successful_run?
+        # HACK
+        #@last_run
         true
       end
 

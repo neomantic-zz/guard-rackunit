@@ -7,7 +7,6 @@ module Guard
       # Returns only that set of paths on all future calls to #paths
       # until they all pass
       class FocusedInspector < BaseInspector
-        attr_accessor :focused_locations
 
         def initialize(options = {})
           super
@@ -15,8 +14,8 @@ module Guard
         end
 
         def paths(paths)
-          if focused_locations.any?
-            focused_locations
+          if @focused_locations.any?
+            @focused_locations
           else
             _clean(paths)
           end

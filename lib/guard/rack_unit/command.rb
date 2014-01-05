@@ -1,5 +1,3 @@
-require 'pathname'
-
 module Guard
   class RackUnit
     class Command < String
