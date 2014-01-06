@@ -15,7 +15,11 @@ module Guard
     #
     def initialize(options = {})
       super
-      @runner = RackUnit::Runner.new
+      @start_on_run = options.delete(:all_on_start) || false
+      if @start_on_run && options[:test_directory].nil?
+        raise ArgumentError, "You better add a test directory to your options"
+      end
+      @runner = RackUnit::Runner.new(options)
     end
 
     # Called once when Guard starts. Please override initialize method to init stuff.
@@ -25,7 +29,9 @@ module Guard
     #
     def start
       ::Guard::UI.info 'Guard::RackUnit is running'
-      run_all
+      if @start_on_run
+        run_all
+      end
     end
 
     # Called when `stop|quit|exit|s|q|e + enter` is pressed (when Guard quits).
@@ -43,7 +49,6 @@ module Guard
     # @return [Object] the task result
     #
     def reload
-      @runner.reload
     end
 
     # Called when just `enter` is pressed
@@ -81,9 +86,7 @@ module Guard
     #
     def run_on_modifications(paths)
       return false if paths.empty?
-      @runner.run(paths)
-      # return false if paths.empty?
-      # @runner.run(paths)
+      @runner.run_on_paths(paths)
     end
 
     # Called on file(s) removals that the Guard plugin watches.

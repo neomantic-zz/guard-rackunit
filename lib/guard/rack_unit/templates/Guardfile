@@ -1,0 +1,4 @@
+# This Guardfile was generated from Guard::RackUnit
+guard :rack_unit, all_on_start: true, test_directory: "tests/" do
+  watch(%r{^tests/.+-tests.rkt$})
+end
