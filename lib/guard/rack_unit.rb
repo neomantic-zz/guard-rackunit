@@ -34,23 +34,6 @@ module Guard
       end
     end
 
-    # Called when `stop|quit|exit|s|q|e + enter` is pressed (when Guard quits).
-    #
-    # @raise [:task_has_failed] when stop has failed
-    # @return [Object] the task result
-    #
-    def stop
-    end
-
-    # Called when `reload|r|z + enter` is pressed.
-    # This method should be mainly used for "reload" (really!) actions like reloading passenger/spork/bundler/...
-    #
-    # @raise [:task_has_failed] when reload has failed
-    # @return [Object] the task result
-    #
-    def reload
-    end
-
     # Called when just `enter` is pressed
     # This method should be principally used for long action like running all specs/tests/...
     #
@@ -59,23 +42,6 @@ module Guard
     #
     def run_all
       @runner.run_all
-    end
-
-    # Default behaviour on file(s) changes that the Guard plugin watches.
-    # @param [Array<String>] paths the changes files or paths
-    # @raise [:task_has_failed] when run_on_change has failed
-    # @return [Object] the task result
-    #
-    def run_on_changes(paths)
-    end
-
-    # Called on file(s) additions that the Guard plugin watches.
-    #
-    # @param [Array<String>] paths the changes files or paths
-    # @raise [:task_has_failed] when run_on_additions has failed
-    # @return [Object] the task result
-    #
-    def run_on_additions(paths)
     end
 
     # Called on file(s) modifications that the Guard plugin watches.
@@ -87,15 +53,6 @@ module Guard
     def run_on_modifications(paths)
       return false if paths.empty?
       @runner.run_on_paths(paths)
-    end
-
-    # Called on file(s) removals that the Guard plugin watches.
-    #
-    # @param [Array<String>] paths the changes files or paths
-    # @raise [:task_has_failed] when run_on_removals has failed
-    # @return [Object] the task result
-    #
-    def run_on_removals(paths)
     end
   end
 end
