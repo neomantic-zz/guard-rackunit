@@ -57,6 +57,20 @@ SUCCESS
       expect(Guard::Notifier).to receive(:notify).with("Success", {title: 'RackUnit Results', image: :success, priority: -2})
       result.issue_notification
     end
+
+
+    it "outputs the stdout" do
+      expected = 'expected'
+      result = 'not expected'
+      with_successful_stdout do |out|
+        expected = out.read # read it to build the expectation
+        out.rewind
+        result = capture_stdout do
+          Guard::RackUnit::RunResult::Success.new out
+        end
+      end
+      expect(result).to eq expected
+    end
   end
 
   describe Guard::RackUnit::RunResult::Failure do
@@ -88,7 +102,7 @@ FAIL
       expect(result.paths).to include '/home/test-user/racket-project/tests/sample-tests.rkt'
     end
 
-    it "outputs the stdout" do
+    it "outputs the stderr" do
       expected = 'expected'
       result = 'not expected'
       with_failed_stderr do |err|
