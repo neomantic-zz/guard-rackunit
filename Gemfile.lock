@@ -19,6 +19,9 @@ GEM
       lumberjack (~> 1.0)
       pry (>= 0.9.12)
       thor (>= 0.18.1)
+    guard-rspec (4.2.3)
+      guard (~> 2.1)
+      rspec (>= 2.14, < 4.0)
     listen (2.4.0)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
@@ -49,4 +52,5 @@ PLATFORMS
 
 DEPENDENCIES
   guard-rackunit!
+  guard-rspec (~> 4.2.3)
   rspec (~> 2.14.1)
