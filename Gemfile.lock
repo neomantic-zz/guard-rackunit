@@ -10,6 +10,13 @@ GEM
     celluloid (0.15.2)
       timers (~> 1.1.0)
     coderay (1.1.0)
+    columnize (0.3.6)
+    debugger (1.6.5)
+      columnize (>= 0.3.1)
+      debugger-linecache (~> 1.2.0)
+      debugger-ruby_core_source (~> 1.3.1)
+    debugger-linecache (1.2.0)
+    debugger-ruby_core_source (1.3.1)
     diff-lcs (1.2.5)
     ffi (1.9.3)
     formatador (0.2.4)
@@ -51,6 +58,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  debugger (~> 1.6.5)
   guard-rackunit!
   guard-rspec (~> 4.2.3)
   rspec (~> 2.14.1)

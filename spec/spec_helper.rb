@@ -4,6 +4,8 @@
 
 require 'rspec'
 require 'rspec/mocks'
+require 'debugger'
+Debugger.start
 Dir["./spec/support/**/*.rb"].sort.each {|f| require f}
 
 RSpec.configure do |config|
