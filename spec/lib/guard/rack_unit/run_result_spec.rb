@@ -28,7 +28,8 @@ describe Guard::RackUnit::RunResult do
     end
 
     it "issue notifications that do nothing" do
-      expect(instance).to respond_to(:issue_notification)
+      expect(Guard::Notifier).to_not receive(:notify)
+      instance.issue_notification
     end
   end
 
