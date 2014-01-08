@@ -4,9 +4,8 @@ describe Guard::RackUnit::RunResult do
 
   context 'success' do
     it "returns a result" do
-      status = double(Process::Status, :success? => true)
-      with_successful_stdout_and_stderr do |out, err|
-        result = described_class.create(status, out, err)
+      stub_successful_run do |out, err, process_status|
+        result = described_class.create(process_status, out, err)
         expect(result).to be_instance_of Guard::RackUnit::RunResult::Success
       end
     end
@@ -14,9 +13,8 @@ describe Guard::RackUnit::RunResult do
 
   context 'failure' do
     it "returns a result" do
-      status = double(Process::Status, :success? => false)
-      with_failure_stdout_and_stderr do |out, err|
-        result = described_class.create(status, out, err)
+      stub_failed_run do |out, err, process_status|
+        result = described_class.create(process_status, out, err)
         expect(result).to be_instance_of Guard::RackUnit::RunResult::Failure
       end
     end

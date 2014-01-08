@@ -4,14 +4,7 @@ module Guard
   class RackUnit
     class Command
 
-      def initialize(last_run_result = RunResult::Pending.new,
-                     command_string  = DEFAULT_CMD_STR)
-        @command_string = command_string
-        @last_run_result = last_run_result
-      end
-
       def execute(paths)
-        paths = (@last_run_result.paths | paths).to_a
         return RunResult::Pending.new if paths.empty?
         cmd = sprintf('%s %s', DEFAULT_CMD_STR, paths.join(' '))
         with_environment do
