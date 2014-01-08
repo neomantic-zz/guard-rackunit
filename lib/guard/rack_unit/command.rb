@@ -4,15 +4,15 @@ module Guard
   class RackUnit
     class Command
 
-      DEFAULT_CMD_STR = 'raco test'.freeze
-
-      def initialize(last_run_result = Pending.new, command_string = DEFAULT_CMD_STR)
+      def initialize(last_run_result = RackUnit::RunResult::Pending.new,
+                     command_string  = DEFAULT_CMD_STR)
         @command_string = command_string
         @last_run_result = last_run_result
       end
 
       def execute(paths)
         paths = (@last_run_result.paths | paths).to_a
+        return Pending.new if paths.empty?
         cmd = sprintf('%s %s', DEFAULT_CMD_STR, paths.join(' '))
         with_environment do
           Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
@@ -29,6 +29,10 @@ module Guard
           yield
         end
       end
+
+      private
+      DEFAULT_CMD_STR = 'raco test'.freeze
+
     end
   end
 end
