@@ -12,7 +12,7 @@ module Guard
 
       def run_on_paths(paths)
         return true if paths.empty?
-        run_tests("Running: #{paths.join(' ')}") do |command|
+        run_tests("Running: #{paths.join(', ')}") do |command|
           command.execute(paths)
         end
       end
@@ -20,7 +20,7 @@ module Guard
       def run_all
         return true if @options[:test_directory].nil?
         run_tests("Resetting") do |command|
-          command.execute([@options[:test_directory] + "*.rkt"])
+          command.execute(@options[:test_directory])
         end
       end
 
