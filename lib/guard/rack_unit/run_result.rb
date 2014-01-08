@@ -20,8 +20,11 @@ module Guard
       class Success
 
         def initialize(result_io)
-          @message = result_io.read
-          puts @message
+          @message = "Success"
+          result_io.each_line do |line|
+            puts @message = line
+          end
+          @message.chomp!
         end
 
         def issue_notification
@@ -39,6 +42,7 @@ module Guard
       class Failure
 
         def initialize(result_io)
+          @message = "Failed"
           @failed_paths_set = Set[]
           result_io.each_line do |line|
             puts line # give user some feedback
@@ -50,6 +54,7 @@ module Guard
               @message = line
             end
           end
+          @message.chomp!
         end
 
         def issue_notification

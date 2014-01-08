@@ -1,0 +1,12 @@
+--------------------
+parsing: """
+FAILURE
+message:    "No exception raised"
+name:       check-exn
+location:   (#<path:/home/test-user/racket-project/tests/sample-tests.rkt> 19 4 389 113)
+expression: (check-exn exn:fail:parsack? (lambda () (parsack-parse string)))
+params:     (#<procedure:exn:fail:parsack?> #<procedure:temp6>)
+
+Check failure
+--------------------
+1/101 test failures

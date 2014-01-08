@@ -1,0 +1,2 @@
+raco test: (submod "tests/vm-tests.rkt" test)
+8 tests passed
