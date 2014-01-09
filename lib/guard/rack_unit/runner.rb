@@ -24,7 +24,6 @@ module Guard
         run_tests("Resetting") do |command|
           command.execute(@options[:test_directory])
         end
-        @last_run_result
       end
 
       private
