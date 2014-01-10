@@ -124,6 +124,35 @@ describe Guard::RackUnit do
           end
         end
       end
+
+      context "with other failed tasks" do
+
+        it "run all previous failed paths" do
+          failed_output =<<FAILED
+--------------------
+parsing: """
+FAILURE
+message:    "No exception raised"
+name:       check-exn
+location:   (#<path:/home/test-user/tests.rkt> 19 4 389 113)
+expression: (check-exn exn:fail:parsack? (lambda () (parsack-parse string)))
+params:     (#<procedure:exn:fail:parsack?> #<procedure:temp6>)
+
+Check failure
+--------------------
+1/101 test failures
+FAILED
+          stub_failed_run_err(StringIO.new(failed_output)) do
+            catch(:task_has_failed) do
+              instance.run_on_modifications(['/home/test-user/tests.rkt'])
+            end
+          end
+          expect(Open3).to receive(:popen3).with('raco test /home/test-user/tests.rkt /paths/test.rkt /paths/another.rkt')
+          catch(:task_has_failed) do
+            instance.run_on_modifications(['/paths/test.rkt', '/paths/another.rkt'])
+          end
+        end
+      end
     end
   end
 end
