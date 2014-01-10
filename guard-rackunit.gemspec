@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/neomantic/guard-rackunit"
   s.files = Dir['lib/**/*']
   s.require_path = ['lib']
-  s.license = 'MIT'
+  s.license = 'GNU General Public License v3'
 
   s.add_runtime_dependency 'guard', ['~> 2.2.5']
 
