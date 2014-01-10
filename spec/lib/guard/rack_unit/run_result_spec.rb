@@ -31,6 +31,10 @@ describe Guard::RackUnit::RunResult do
       expect(Guard::Notifier).to_not receive(:notify)
       instance.issue_notification
     end
+
+    it "return false for successful" do
+      expect(instance.successful?).to be_false
+    end
   end
 
   describe Guard::RackUnit::RunResult::Success do
@@ -39,6 +43,13 @@ describe Guard::RackUnit::RunResult do
         result = Guard::RackUnit::RunResult::Success.new out
         expect(result.paths).to be_instance_of Set
         expect(result.paths).to be_empty
+      end
+    end
+
+    it "returns true for successful" do
+      with_successful_stdout do |out|
+        result = Guard::RackUnit::RunResult::Success.new out
+        expect(result.successful?).to be_true
       end
     end
 
@@ -82,6 +93,14 @@ SUCCESS
         expect(result.paths).to_not be_empty
       end
     end
+
+    it "returns false for successful" do
+      with_failed_stderr do |err|
+        result = Guard::RackUnit::RunResult::Failure.new err
+        expect(result.successful?).to be_false
+      end
+    end
+
 
     it "retrieves the correct failed paths" do
       failure =<<FAIL

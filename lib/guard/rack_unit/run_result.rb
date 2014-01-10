@@ -15,6 +15,7 @@ module Guard
       class Pending
         def issue_notification; end
         def paths; Set[]; end
+        def successful?; false; end
       end
 
       class Success
