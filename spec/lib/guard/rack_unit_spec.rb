@@ -16,10 +16,9 @@ describe Guard::RackUnit do
         end
       end
 
-      it "returns a failure result on failure when it has a test directory" do
+      it "throw a :task_has_failed symbol when it has a test directory" do
         stub_failed_run do
-          result = instance.start
-          expect(result).to be_instance_of Guard::RackUnit::RunResult::Failure
+          expect{instance.start}.to throw_symbol :task_has_failed
         end
       end
 
@@ -31,7 +30,7 @@ describe Guard::RackUnit do
       it "updates the UI" do
         expect(::Guard::UI).to receive(:info).at_least(:once).ordered.with('Guard::RackUnit is running')
         expect(::Guard::UI).to receive(:info).at_least(:once).ordered.with('Resetting', reset: true)
-        instance.start
+        catch(:task_has_failed){instance.start}
       end
     end
 
@@ -71,15 +70,14 @@ describe Guard::RackUnit do
     context "failure" do
       it "returns a failure result on failure" do
         stub_failed_run do
-          instance.run_all
-          expect(instance.run_all).to be_instance_of Guard::RackUnit::RunResult::Failure
+          expect{instance.run_all}.to throw_symbol :task_has_failed
         end
       end
 
       it "issues a notification" do
-        expect(Guard::Notifier).to receive(:notify).with("1/101 test failures", {title: 'RackUnit Results', image: :failed, priority: 2})
         stub_failed_run do
-          instance.run_all
+          expect(Guard::Notifier).to receive(:notify).with("1/101 test failures", {title: 'RackUnit Results', image: :failed, priority: 2})
+          catch(:task_has_failed){instance.run_all }
         end
       end
     end
@@ -118,10 +116,12 @@ describe Guard::RackUnit do
         end
       end
 
-      it "returns a failure result on failure when it has a test directory" do
+      it "throws a :task_has_failed symbol on failure" do
         stub_failed_run do
-          result = instance.run_on_modifications(['/paths/test.rkt', '/paths/another.rkt'])
-          expect(result).to be_instance_of Guard::RackUnit::RunResult::Failure
+          expect do
+            result = instance.run_on_modifications(['/paths/test.rkt', '/paths/another.rkt'])
+            expect(result).to be_instance_of Guard::RackUnit::RunResult::Failure
+          end
         end
       end
     end

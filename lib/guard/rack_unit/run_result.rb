@@ -33,6 +33,8 @@ module Guard
 
         def paths; Set[]; end
 
+        def successful?; true; end
+
         private
         NOTIFY_OPTIONS = {image: :success, priority: -2}.freeze
 
@@ -64,6 +66,8 @@ module Guard
         def paths
           @failed_paths_set || Set[]
         end
+
+        def successful?; false; end
 
         private
         FAILURE_REGEX = /\Alocation:.+path:(.+)>/

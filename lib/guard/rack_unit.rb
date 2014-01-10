@@ -41,7 +41,7 @@ module Guard
     def run_all
       Guard::UI.info("Resetting", reset: true)
       if test_directory?
-        do_run do
+        result = do_run do
           @runner.run(@test_directory)
         end
       else
@@ -69,7 +69,7 @@ module Guard
     def do_run
       @last_run_result = yield
       @last_run_result.issue_notification
-      @last_run_result
+      @last_run_result.successful? ? @last_run_result : throw(:task_has_failed)
     end
 
     def test_directory?
