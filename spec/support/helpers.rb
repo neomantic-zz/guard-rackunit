@@ -32,13 +32,21 @@ end
 
 def stub_failed_run
   with_failed_stderr do |err|
-    out = StringIO.new('')
-    process = double(Process::Status, :success? => false)
-    thread = double('wait_thr', pid: 1, value: process)
-    Open3.stub(:popen3).and_yield(StringIO.new(''), out, err, thread)
-    if block_given?
-      yield out, err, thread.value
+    stub_failed_run_err(err) do | out, err, thread|
+      if block_given?
+        yield out, err, thread
+      end
     end
+  end
+end
+
+def stub_failed_run_err(err_io)
+  out = StringIO.new('')
+  process = double(Process::Status, :success? => false)
+  thread = double('wait_thr', pid: 1, value: process)
+  Open3.stub(:popen3).and_yield(StringIO.new(''), out, err_io, thread)
+  if block_given?
+    yield out, err_io, thread.value
   end
 end
 

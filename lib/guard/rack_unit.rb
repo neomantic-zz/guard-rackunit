@@ -16,10 +16,9 @@ module Guard
     def initialize(options = {})
       super
       @start_on_run = options.delete(:all_on_start) || false
-      if @start_on_run && options[:test_directory].nil?
-        raise ArgumentError, "You better add a test directory to your options"
-      end
-      @runner = RackUnit::Runner.new(options)
+      @test_directory = options.delete(:test_directory) || []
+      @runner = RackUnit::Runner.new
+      @last_run_result = pending_result
     end
 
     # Called once when Guard starts. Please override initialize method to init stuff.
@@ -29,9 +28,8 @@ module Guard
     #
     def start
       ::Guard::UI.info 'Guard::RackUnit is running'
-      if @start_on_run
-        run_all
-      end
+      return run_all if @start_on_run
+      pending_result
     end
 
     # Called when just `enter` is pressed
@@ -41,7 +39,14 @@ module Guard
     # @return [Object] the task result
     #
     def run_all
-      @runner.run_all
+      Guard::UI.info("Resetting", reset: true)
+      if test_directory?
+        do_run do
+          @runner.run(@test_directory)
+        end
+      else
+        pending_result
+      end
     end
 
     # Called on file(s) modifications that the Guard plugin watches.
@@ -51,8 +56,28 @@ module Guard
     # @return [Object] the task result
     #
     def run_on_modifications(paths)
-      return false if paths.empty?
-      @runner.run_on_paths(paths)
+      paths_to_run = (@last_run_result.paths | paths)
+      return pending_result if paths_to_run.empty?
+      paths_to_run = paths_to_run.to_a
+      Guard::UI.info("Running: #{paths_to_run.join(', ')}", reset: true)
+      do_run do
+        @runner.run(paths_to_run)
+      end
+    end
+
+    private
+    def do_run
+      @last_run_result = yield
+      @last_run_result.issue_notification
+      @last_run_result
+    end
+
+    def test_directory?
+      !@test_directory.nil? && !@test_directory.empty?
+    end
+
+    def pending_result
+      @pending ||= RunResult::Pending.new
     end
   end
 end
