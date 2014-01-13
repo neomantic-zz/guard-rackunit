@@ -2,8 +2,8 @@ def test_path
   support_file_path("/tests")
 end
 
-def with_failed_stderr
-  File.open(support_file_path("/samples/failed_tests")) do |io|
+def with_failed_stderr(sample_path = '/samples/failed_tests')
+  File.open(support_file_path(sample_path)) do |io|
     yield io
   end
 end
@@ -19,35 +19,47 @@ def support_file_path(name)
 end
 
 def stub_successful_run
-  with_successful_stdout do |out|
-    process = double(Process::Status, :success? => true)
-    thread = double('wait_thr', pid: 1, value: process)
-    err = StringIO.new('')
-    Open3.stub(:popen3).and_yield(StringIO.new(''), out, err, thread)
+  with_successful_stdout do |stdout|
+    thread = stub_success_process
+    stderr = StringIO.new('')
+    stub_run(stdout, stderr, thread)
     if block_given?
-      yield out, err, thread.value
+      yield stdout, stderr, thread.value
     end
   end
 end
 
 def stub_failed_run
-  with_failed_stderr do |err|
-    stub_failed_run_err(err) do | out, err, thread|
+  with_failed_stderr do |stderr|
+    stub_failed_run_err(stderr) do | stdout, stderr, thread|
       if block_given?
-        yield out, err, thread
+        yield stdout, stderr, thread
       end
     end
   end
 end
 
-def stub_failed_run_err(err_io)
-  out = StringIO.new('')
+def stub_failed_process
   process = double(Process::Status, :success? => false)
-  thread = double('wait_thr', pid: 1, value: process)
-  Open3.stub(:popen3).and_yield(StringIO.new(''), out, err_io, thread)
+  double('wait_thr', pid: 1, value: process)
+end
+
+def stub_success_process
+  process = double(Process::Status, :success? => true)
+  double('wait_thr', pid: 1, value: process)
+end
+
+def stub_failed_run_err(stderr)
+  stdout = StringIO.new('')
+  thread = stub_failed_process
+  stub_run(stdout, stderr, thread)
   if block_given?
-    yield out, err_io, thread.value
+    yield stdout, stderr, thread.value
   end
+end
+
+def stub_run(stdout, stderr, thread = stub_success_process)
+  Open3.stub(:popen3).and_yield(StringIO.new(''), stdout, stderr, thread)
 end
 
 def capture_stdout

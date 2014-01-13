@@ -10,7 +10,8 @@ module Guard
         with_environment do
           Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
             pid = wait_thr.pid
-            RunResult.create(wait_thr.value, stdout, stderr)
+            wait_thr.value
+            RunResult.create(stdout, stderr)
           end
         end
       end

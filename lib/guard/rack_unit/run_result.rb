@@ -1,13 +1,17 @@
 require 'set'
 require_relative './notifier'
+require 'debugger'
 module Guard
   class RackUnit
     class RunResult
 
-      def self.create(process_status, stdout, stderr)
-        if process_status.success?
+      def self.create(stdout, stderr)
+        err_byte = stderr.getbyte
+        if err_byte.nil?
           Success.new(stdout)
         else
+          puts stdout.readlines
+          stderr.ungetbyte(err_byte)
           Failure.new(stderr)
         end
       end
@@ -44,10 +48,10 @@ module Guard
 
       class Failure
 
-        def initialize(result_io)
+        def initialize(stderr)
           @message = "Failed"
           @failed_paths_set = Set[]
-          result_io.each_line do |line|
+          stderr.each_line do |line|
             puts line # give user some feedback
             match_data = line.match(FAILURE_REGEX)
             unless match_data.nil?

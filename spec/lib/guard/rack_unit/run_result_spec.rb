@@ -4,8 +4,8 @@ describe Guard::RackUnit::RunResult do
 
   context 'success' do
     it "returns a result" do
-      stub_successful_run do |out, err, process_status|
-        result = described_class.create(process_status, out, err)
+      stub_successful_run do |out, err, _|
+        result = described_class.create(out, err)
         expect(result).to be_instance_of Guard::RackUnit::RunResult::Success
       end
     end
@@ -13,9 +13,38 @@ describe Guard::RackUnit::RunResult do
 
   context 'failure' do
     it "returns a result" do
-      stub_failed_run do |out, err, process_status|
-        result = described_class.create(process_status, out, err)
+      stub_failed_run do |out, err, _|
+        result = described_class.create(out,err)
         expect(result).to be_instance_of Guard::RackUnit::RunResult::Failure
+      end
+    end
+
+    context "when there are successes too, but a runtime failure" do
+
+      it "returns a failure result" do
+        with_successful_stdout do |stdout|
+          with_failed_stderr('/samples/runtime_error') do |stderr|
+            stub_run(stdout, stderr)
+            result = described_class.create(stdout, stderr)
+            expect(result).to be_instance_of Guard::RackUnit::RunResult::Failure
+          end
+        end
+      end
+
+      it "prints both the stdout and stderr" do
+        with_successful_stdout do |stdout|
+          with_failed_stderr('/samples/runtime_error') do |stderr|
+            stub_run(stdout, stderr)
+            expected = stdout.read
+            stdout.rewind
+            expected << stderr.read
+            stderr.rewind
+            result = capture_stdout do
+              described_class.create(stdout,stderr)
+            end
+            expect(result).to eq expected
+          end
+        end
       end
     end
   end
@@ -88,7 +117,7 @@ SUCCESS
 
     it "returns a populated set of failed paths" do
       with_failed_stderr do |err|
-        result = Guard::RackUnit::RunResult::Failure.new err
+        result = Guard::RackUnit::RunResult::Failure.new(err)
         expect(result.paths).to be_instance_of Set
         expect(result.paths).to_not be_empty
       end
@@ -96,7 +125,7 @@ SUCCESS
 
     it "returns false for successful" do
       with_failed_stderr do |err|
-        result = Guard::RackUnit::RunResult::Failure.new err
+        result = Guard::RackUnit::RunResult::Failure.new(err)
         expect(result.successful?).to be_false
       end
     end
@@ -117,7 +146,7 @@ Check failure
 --------------------
 1/101 test failures
 FAIL
-      result = Guard::RackUnit::RunResult::Failure.new StringIO.new(failure)
+      result = Guard::RackUnit::RunResult::Failure.new(StringIO.new(failure))
       expect(result.paths).to include '/home/test-user/racket-project/tests/sample-tests.rkt'
     end
 
@@ -128,7 +157,7 @@ FAIL
         expected = err.read # read it to build the expectation
         err.rewind
         result = capture_stdout do
-          Guard::RackUnit::RunResult::Failure.new err
+          Guard::RackUnit::RunResult::Failure.new(err)
         end
       end
       expect(result).to eq expected
@@ -149,13 +178,13 @@ Check failure
 --------------------
 1/101 test failures
 FAIL
-      result = Guard::RackUnit::RunResult::Failure.new StringIO.new(failure)
+      result = Guard::RackUnit::RunResult::Failure.new(StringIO.new(failure))
       expect(Guard::Notifier).to receive(:notify).with("1/101 test failures", {title: 'RackUnit Results', image: :failed, priority: 2})
       result.issue_notification
     end
 
     it "issues a notification with default message if stderr is empty" do
-      result = Guard::RackUnit::RunResult::Failure.new StringIO.new('')
+      result = Guard::RackUnit::RunResult::Failure.new(StringIO.new(''))
       expect(Guard::Notifier).to receive(:notify).with("Failed", {title: 'RackUnit Results', image: :failed, priority: 2})
       result.issue_notification
     end
