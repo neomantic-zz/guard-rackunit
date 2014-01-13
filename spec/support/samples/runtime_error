@@ -1,0 +1,16 @@
+--------------------
+description
+ERROR
+string-trim: contract violation
+  expected: string?
+  given: 0
+  context...:
+   /usr/share/racket/collects/racket/string.rkt:75:0: string-trim22
+   /home/calbers/src/mine/scheme-assembler/bytecode.rkt:82:0: sexp-instruction->bytecode
+   /home/calbers/src/mine/scheme-assembler/tests/bytecode-tests.rkt: [running body]
+   /usr/share/racket/collects/compiler/commands/test.rkt:29:10: for-loop
+   f8
+   /usr/share/racket/collects/compiler/commands/../../racket/private/map.rkt:53:19: loop
+   /usr/share/racket/collects/compiler/commands/test.rkt: [running body]
+   /usr/share/racket/collects/raco/raco.rkt: [running body]
+   /usr/share/racket/collects/raco/main.rkt: [running body]
