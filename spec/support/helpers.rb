@@ -18,7 +18,8 @@ def support_file_path(name)
   File.expand_path(File.dirname(__FILE__) + name)
 end
 
-def stub_successful_run
+def stub_successful_run(paths = [])
+  stub_paths(paths)
   with_successful_stdout do |stdout|
     thread = stub_success_process
     stderr = StringIO.new('')
@@ -29,7 +30,14 @@ def stub_successful_run
   end
 end
 
-def stub_failed_run
+def stub_paths(paths)
+  paths.collect do |path|
+    allow(File).to receive(:exists?).at_least(:once).with(path).and_return true
+  end
+end
+
+def stub_failed_run(paths = [])
+  stub_paths(paths)
   with_failed_stderr do |stderr|
     stub_failed_run_err(stderr) do | stdout, stderr, thread|
       if block_given?
@@ -49,7 +57,8 @@ def stub_success_process
   double('wait_thr', pid: 1, value: process)
 end
 
-def stub_failed_run_err(stderr)
+def stub_failed_run_err(stderr, path = '')
+  stub_paths([path]) unless path.empty?
   stdout = StringIO.new('')
   thread = stub_failed_process
   stub_run(stdout, stderr, thread)

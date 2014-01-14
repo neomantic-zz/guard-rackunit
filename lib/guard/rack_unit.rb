@@ -18,7 +18,6 @@ module Guard
       @start_on_run = options.delete(:all_on_start) || false
       @test_directory = options.delete(:test_directory) || []
       @runner = RackUnit::Runner.new
-      @last_run_result = pending_result
     end
 
     # Called once when Guard starts. Please override initialize method to init stuff.
@@ -39,14 +38,9 @@ module Guard
     # @return [Object] the task result
     #
     def run_all
+      return pending_result unless test_directory?
       Guard::UI.info("Resetting", reset: true)
-      if test_directory?
-        result = do_run do
-          @runner.run(@test_directory)
-        end
-      else
-        pending_result
-      end
+      do_run{ @runner.run(@test_directory) }
     end
 
     # Called on file(s) modifications that the Guard plugin watches.
@@ -56,20 +50,16 @@ module Guard
     # @return [Object] the task result
     #
     def run_on_modifications(paths)
-      paths_to_run = (@last_run_result.paths | paths)
-      return pending_result if paths_to_run.empty?
-      paths_to_run = paths_to_run.to_a
-      Guard::UI.info("Running: #{paths_to_run.join(', ')}", reset: true)
-      do_run do
-        @runner.run(paths_to_run)
-      end
+      return pending_result if paths.empty?
+      Guard::UI.info("Running: #{paths.join(', ')}", reset: true)
+      do_run{ @runner.run(paths) }
     end
 
     private
     def do_run
-      @last_run_result = yield
-      @last_run_result.issue_notification
-      @last_run_result.successful? ? @last_run_result : throw(:task_has_failed)
+      run_result = yield
+      run_result.issue_notification
+      run_result.successful? ? run_result : throw(:task_has_failed)
     end
 
     def test_directory?
