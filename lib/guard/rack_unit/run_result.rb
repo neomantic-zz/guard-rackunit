@@ -53,12 +53,21 @@ module Guard
           @failed_paths_set = Set[]
           stderr.each_line do |line|
             puts line # give user some feedback
-            match_data = line.match(FAILURE_REGEX)
-            unless match_data.nil?
-              @failed_paths_set.add(match_data[1])
+
+            if line =~ ERROR_REGEX
+              # an exception as raised
+              @message = stderr.readline
+              puts @message
+              @message = "ERROR: #{@message.strip}"
+              stderr.each_line{|line| puts line}
             else
-              # the last line should have the results summary
-              @message = line
+              match_data = line.match(FAILURE_REGEX)
+              unless match_data.nil?
+                @failed_paths_set.add(match_data[1])
+              else
+                # the last line should have the results summary
+                @message = line
+              end
             end
           end
           @message.chomp!
@@ -77,7 +86,7 @@ module Guard
         private
         FAILURE_REGEX = /\Alocation:.+path:(.+)>/
         NOTIFY_OPTIONS = {image: :failed, priority: 2}.freeze
-
+        ERROR_REGEX = /context#{Regexp.escape('...')}:/
       end
     end
   end

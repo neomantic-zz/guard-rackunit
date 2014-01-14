@@ -163,7 +163,7 @@ FAIL
       expect(result).to eq expected
     end
 
-    it "issues a notification with the correct message" do
+    it "issues a notification with the correct message when it's simple" do
       failure =<<FAIL
 --------------------
 parsing: """
@@ -186,6 +186,30 @@ FAIL
     it "issues a notification with default message if stderr is empty" do
       result = Guard::RackUnit::RunResult::Failure.new(StringIO.new(''))
       expect(Guard::Notifier).to receive(:notify).with("Failed", {title: 'RackUnit Results', image: :failed, priority: 2})
+      result.issue_notification
+    end
+
+    it "issues a notification with a message when hit hits an exception" do
+      stdout =<<FAILED
+--------------------
+creates an assembly s-expression
+ERROR
+this is an error
+  context...:
+   /home/calbers/src/mine/scheme-assembler/evaluator.rkt:50:0: parsed-sexp->sexp-assembly
+   /home/calbers/src/mine/scheme-assembler/tests/evaluator-tests.rkt: [running body]
+   /usr/share/racket/collects/compiler/commands/test.rkt:29:10: for-loop
+   f8
+   /usr/share/racket/collects/compiler/commands/test.rkt: [running body]
+   /usr/share/racket/collects/raco/raco.rkt: [running body]
+   /usr/share/racket/collects/raco/main.rkt: [running body]
+
+--------------------
+FAILED
+      result = Guard::RackUnit::RunResult::Failure.new(StringIO.new(stdout))
+      expect(Guard::Notifier).to receive(:notify).
+        with("ERROR: /home/calbers/src/mine/scheme-assembler/evaluator.rkt:50:0: parsed-sexp->sexp-assembly",
+             {title: 'RackUnit Results', image: :failed, priority: 2})
       result.issue_notification
     end
   end
