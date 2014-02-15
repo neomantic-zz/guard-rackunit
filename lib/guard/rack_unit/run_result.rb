@@ -1,6 +1,5 @@
 require 'set'
 require_relative './notifier'
-require 'debugger'
 module Guard
   class RackUnit
     class RunResult
