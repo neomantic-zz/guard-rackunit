@@ -13,4 +13,11 @@ RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
   config.order = 'random'
+  orig_stderr, orig_stdout = $stderr, $stdout
+  config.before(:all) do
+    $stderr, $stdout = StringIO.new(""), StringIO.new("")
+  end
+  config.after(:all) do
+    $stderr, $stdout = orig_stderr, orig_stdout
+  end
 end
