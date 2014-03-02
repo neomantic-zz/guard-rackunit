@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
 
   s.authors = ['Chad Albers']
   s.email = 'calbers@neomantic.com'
-  s.summary = "Guard gem for Racket's RackUnit"
+  s.summary = "Guard plugin for Racket's RackUnit"
   s.description = "Guard::RackUnit runs Racket RackUnit tests"
   s.homepage = "https://github.com/neomantic/guard-rackunit"
   s.files = Dir['lib/**/*']
