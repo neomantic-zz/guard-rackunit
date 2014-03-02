@@ -57,9 +57,7 @@ module Guard
 
       private
       def select_existing(paths)
-        paths.select do |path|
-          File.exists?(path)
-        end
+        paths.select{|path| File.exists?(path)}
       end
     end
   end
