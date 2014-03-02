@@ -16,7 +16,7 @@ module Guard
     def initialize(options = {})
       super
       @start_on_run = options.delete(:all_on_start) || false
-      @test_directory = options.delete(:test_directory) || []
+      @test_paths = options.delete(:test_paths) || []
       @runner = RackUnit::Runner.new
     end
 
@@ -38,9 +38,9 @@ module Guard
     # @return [Object] the task result
     #
     def run_all
-      return pending_result unless test_directory?
+      return pending_result unless test_paths?
       Guard::UI.info("Resetting", reset: true)
-      do_run{ @runner.run(@test_directory) }
+      do_run{ @runner.run(@test_paths) }
     end
 
     # Called on file(s) modifications that the Guard plugin watches.
@@ -62,8 +62,8 @@ module Guard
       run_result.successful? ? run_result : throw(:task_has_failed)
     end
 
-    def test_directory?
-      !@test_directory.nil? && !@test_directory.empty?
+    def test_paths?
+      !@test_paths.nil? && !@test_paths.empty?
     end
 
     def pending_result

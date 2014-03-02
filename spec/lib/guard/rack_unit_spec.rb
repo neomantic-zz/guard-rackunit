@@ -7,18 +7,18 @@ describe Guard::RackUnit do
 
   describe "start" do
     context "when all_on_start is enabled" do
-      let(:test_directory){['/tests']}
-      let(:instance){described_class.new({all_on_start: true, test_directory: test_directory})}
+      let(:test_paths){['/tests']}
+      let(:instance){described_class.new({all_on_start: true, test_paths: test_paths})}
 
       it "returns a success result on success" do
-        stub_successful_run(test_directory) do
+        stub_successful_run(test_paths) do
           result = instance.start
           expect(result).to be_instance_of Guard::RackUnit::RunResult::Success
         end
       end
 
       it "throw a :task_has_failed symbol when it has a test directory" do
-        stub_failed_run(test_directory) do
+        stub_failed_run(test_paths) do
           expect{instance.start}.to throw_symbol :task_has_failed
         end
       end
@@ -51,19 +51,19 @@ describe Guard::RackUnit do
 
   describe "run_all" do
 
-    let(:test_directory) { ['tests/'] }
-    let(:instance){described_class.new({test_directory: test_directory})}
+    let(:test_paths) { ['tests/'] }
+    let(:instance){described_class.new({test_paths: test_paths})}
 
     context "success" do
       it "returns a success result on success" do
-        stub_successful_run(test_directory) do
+        stub_successful_run(test_paths) do
           expect(instance.run_all).to be_instance_of Guard::RackUnit::RunResult::Success
         end
       end
 
       it "issues a notification" do
         expect(Guard::Notifier).to receive(:notify).with("8 tests passed", {title: 'RackUnit Results', image: :success, priority: -2})
-        stub_successful_run(test_directory) do
+        stub_successful_run(test_paths) do
           instance.run_all
         end
       end
@@ -71,13 +71,13 @@ describe Guard::RackUnit do
 
     context "failure" do
       it "returns a failure result on failure" do
-        stub_failed_run(test_directory) do
+        stub_failed_run(test_paths) do
           expect{instance.run_all}.to throw_symbol :task_has_failed
         end
       end
 
       it "issues a notification" do
-        stub_failed_run(test_directory) do
+        stub_failed_run(test_paths) do
           expect(Guard::Notifier).to receive(:notify).with("1/101 test failures", {title: 'RackUnit Results', image: :failed, priority: 2})
           catch(:task_has_failed){instance.run_all }
         end
@@ -86,7 +86,7 @@ describe Guard::RackUnit do
 
     it "issues a notification" do
       expect(Guard::UI).to receive(:info).with("Resetting", reset: true)
-      stub_successful_run(test_directory) do
+      stub_successful_run(test_paths) do
         instance.run_all
       end
     end
