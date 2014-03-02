@@ -44,6 +44,7 @@ module Guard
 
     end
 
+    private
 
     class PathSet
 
