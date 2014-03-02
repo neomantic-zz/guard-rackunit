@@ -1,5 +1,5 @@
-require File.expand_path('../lib/guard/rack_unit', __FILE__)
-require File.expand_path('../lib/guard/rack_unit/version', __FILE__)
+require File.expand_path('../lib/guard/rackunit', __FILE__)
+require File.expand_path('../lib/guard/rackunit/version', __FILE__)
 
 Gem::Specification.new do |s|
   s.name = 'guard-rackunit'
