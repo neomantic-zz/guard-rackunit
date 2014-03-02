@@ -28,13 +28,9 @@ module Guard
       # This class runs a Command (which will be customizable)
       # And produces a run result
       def run(paths = [])
-        if paths.empty?
-          pending_result
-        else
-          path_set = PathSet.new(@last_run_result.paths, Set.new(paths))
-          @last_run_result = Command.new.execute(path_set.to_a)
-          @last_run_result
-        end
+        return pending_result if paths.empty?
+        path_set = PathSet.new(@last_run_result.paths, Set.new(paths))
+        @last_run_result = Command.new.execute(path_set.to_a)
       end
 
       private
