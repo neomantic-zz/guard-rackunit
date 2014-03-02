@@ -6,8 +6,8 @@ string-trim: contract violation
   given: 0
   context...:
    /usr/share/racket/collects/racket/string.rkt:75:0: string-trim22
-   /home/calbers/src/mine/scheme-assembler/bytecode.rkt:82:0: sexp-instruction->bytecode
-   /home/calbers/src/mine/scheme-assembler/tests/bytecode-tests.rkt: [running body]
+   /home/mine/tests/blob-tests.rkt:82:0: sexp-instruction->bytecode
+   /home/mine/tests/blob-tests.rkt: [running body]
    /usr/share/racket/collects/compiler/commands/test.rkt:29:10: for-loop
    f8
    /usr/share/racket/collects/compiler/commands/../../racket/private/map.rkt:53:19: loop
