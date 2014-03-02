@@ -1,0 +1,3 @@
+v1.0.0
+	* Initial release with support for raco test, and options for
+	starting all tests on start, and specify test paths
