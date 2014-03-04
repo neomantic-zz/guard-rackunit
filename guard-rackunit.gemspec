@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.require_path = ['lib']
   s.license = 'GNU General Public License v3'
 
-  s.add_runtime_dependency 'guard', ['~> 2.4.0']
+  s.add_runtime_dependency 'guard', ['~> 2.5.1']
 
   s.add_development_dependency 'guard-rspec', ['~> 4.2.3']
   s.add_development_dependency 'rspec', ['~> 2.14.1']
