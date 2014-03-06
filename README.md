@@ -1,6 +1,6 @@
 # Guard::RackUnit
 
-Guard::RackUnit is a Guard plugin to run
+`Guard::RackUnit` is a Guard plugin to run
 [Racket's](http:/racket-lang.org)
 [RackUnit](http://docs.racket-lang.org/rackunit/index.html) unit
 tests.
