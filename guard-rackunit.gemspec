@@ -14,6 +14,9 @@ Gem::Specification.new do |s|
   s.files = Dir['lib/**/*']
   s.require_path = ['lib']
   s.license = 'GNU General Public License v3'
+  s.test_files = Dir['spec/**/*']
+  s.extra_rdoc_files = %w{README.md ChangeLog LICENSE}
+  s.rdoc_options = ["--main", "README.md", "--charset=UTF-8"]
 
   s.add_runtime_dependency 'guard', ['~> 2.5.1']
 
