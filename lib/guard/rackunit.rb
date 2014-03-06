@@ -18,7 +18,7 @@ require 'guard/plugin'
 module Guard
   class RackUnit < Plugin
 
-    require_relative 'rack_unit/runner'
+    require_relative 'rackunit/runner'
 
     # Initializes a Guard plugin.
     # Don't do any work here, especially as Guard plugins get initialized even if they are not in an active group!
