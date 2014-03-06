@@ -60,7 +60,7 @@ Please submit support questions, feature requests, and issues to
 the Github repository's [issue tracker](https://github.com/neomantic/guard-rackunit/issues).
 
 ## Updates
-Consult the [ChangeLog](./Changelog) when upgrading to newer versions.
+Consult the ChangeLog when upgrading to newer versions.
 
 ## Development
 The source code is hosted at
