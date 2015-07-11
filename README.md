@@ -19,31 +19,28 @@ described below is a typical setup.
 
 1. Install a relatively recent version of Ruby.
 2. Install [bundler](http://bundler.io)
-3. Install [rvm](https://rvm.io)
-4. Create a `Gemfile` in your Racket project's root directory. To the
-   `Gemfile`, add both the guard gem and the guard-rackunit gem. See
-   the example below.
-5. In the directory where the `Gemfile` is stored, run `bundle install`
+3. Create a `Gemfile` in your Racket project's root directory. To the
+   `Gemfile`, add the guard-rackunit gem. See the example below.
+
+    ``` ruby
+    # Gemfile
+    source 'https://www.rubygems.org'
+
+    gem 'guard-rackunit'
+    ```
+
+4. In the directory where the `Gemfile` is stored, run `bundle install`.
+   This will install `guard-rackunit` and all gems it depends on.
+5. Initialize the Guardfile with `bundle exec guard init`
+   with a default setup for RackUnit.
 
 If everything successfully installs, you are now ready to use
 Guard. Consult the usage section below on how to use the RackUnit
 plugin.
 
-### Example Gemfile
-``` ruby
-source 'https://www.rubygems.org'
-gem "guard", "~> 2.5.1"
-gem 'guard-rackunit', path: '/home/calbers/src/mine/guard-rackunit'
-```
-
 ## Usage
-To use the RackUnit Guard plugin, Guard must be initialized. To do so,
-execute the following command in your project's root directory: `bundle
-exec guard init`. This should create a `Guardfile` with a default
-setup for RackUnit.
 
-Now, to start Guard, execute the following command: `bundle exec guard
-start`.
+To start Guard, execute the following command: `bundle exec guard start`.
 
 Please consult Guard's own
 [usage notes](https://github.com/guard/guard#readme) for more
